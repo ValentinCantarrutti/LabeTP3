@@ -20,10 +20,12 @@ export default class Game extends Phaser.Scene {
 
   create() {
     const map = this.make.tilemap({ key: "map" });
+    
 
     // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
     // Phaser's cache (i.e. the name you used in preload)
     const tileset = map.addTilesetImage("tileset", "tileset");
+    
 
 
 
@@ -31,6 +33,8 @@ export default class Game extends Phaser.Scene {
     const belowLayer = map.createLayer("Fondo", tileset, 0, 0);
     const platformLayer = map.createLayer("Plataformas", tileset, 0, 0);
     const objectsLayer = map.getObjectLayer("Objetos");
+
+    this.objectsLayer = objectsLayer;
 
     // Find in the Object Layer, the name "dude" and get position
     const spawnPoint = map.findObject(
@@ -99,11 +103,33 @@ export default class Game extends Phaser.Scene {
     // add overlap between stars and platform layer
     this.physics.add.collider(this.stars, platformLayer);
 
-    this.scoreText = this.add.text(16, 16, `Score: ${this.score}`, {
+    this.scoreText = this.add.text(16, 16, `Recolectados: ${this.score}/5`, {
       fontSize: "32px",
       fill: "#000",
     });
+
+    const exitZoneData = objectsLayer.objects.find(obj => obj.name === "Llegada" && obj.type === "Escape");
+
+
+    if (exitZoneData) {
+      this.exitZone = this.add.zone(exitZoneData.x, exitZoneData.y, exitZoneData.width, exitZoneData.height);
+      this.physics.add.existing(this.exitZone);
+      this.exitZone.body.setAllowGravity(false);
+      this.exitZone.body.setImmovable(true);
+      this.physics.add.overlap(this.player, this.exitZone, this.tryExit, null, this);
+    }
+
   }
+
+  tryExit(player, zone) {
+    if (this.score >= 5) {
+      console.log("¡Cambio de pantalla!");
+      this.scene.start("Segundaescena");
+    } else {
+      console.log("Necesitas al menos 5 puntos para avanzar.");
+    }
+  }
+  
 
   update() {
   const speed = 160;
@@ -127,17 +153,19 @@ export default class Game extends Phaser.Scene {
   }
 }
 
+
+
   collectStar(player, star) {
     star.disableBody(true, true);
 
-    this.score += 10;
-    this.scoreText.setText(`Score: ${this.score}`);
+    this.score += 1;
+    this.scoreText.setText(`Recolectados: ${this.score}/5`);
 
     if (this.stars.countActive(true) === 0) {
       //  A new batch of stars to collect
-      this.stars.children.iterate(function (child) {
-        child.enableBody(true, child.x, 0, true, true);
-      });
+      // this.stars.children.iterate(function (child) {
+      //  child.enableBody(true, child.x, 0, true, true);
+      // });
     }
   }
 }
