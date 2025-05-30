@@ -3,9 +3,9 @@ export default class NextScene extends Phaser.Scene {
       super("Segundaescena");
     }
   
-    init() {
-        this.score = 0;
-      }
+init(data) {
+  this.scoremax = data.scoremax || 0;
+}
     
     preload() {
 
@@ -17,5 +17,9 @@ export default class NextScene extends Phaser.Scene {
       this.add.text(100, 100, "¡Bienvenido a la siguiente escena!", { fontSize: "32px", fill: "#fff" });
 
 
+  this.add.text(100, 150, `Puntuación final: ${this.scoremax}`, {
+    fontSize: "28px",
+    fill: "#ffffff"
+    });
     }
   }

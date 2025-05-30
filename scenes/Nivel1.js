@@ -1,17 +1,17 @@
 // URL to explain PHASER scene: https://rexrainbow.github.io/phaser3-rex-notes/docs/site/scene/
 
-export default class Game extends Phaser.Scene {
+export default class Nivel1 extends Phaser.Scene {
   constructor() {
-    super("game");
+    super("Nivel1");
   }
 
-  init(data) {
+  init() {
     this.score = 0;
-    this.scoremax = data?.scoremax || 0;
+    this.scoremax= 0;
   }
 
   preload() {
-    this.load.tilemapTiledJSON("map", "public/assets/tilemap/map.json");
+    this.load.tilemapTiledJSON("map2", "public/assets/tilemap/map2.json");
     this.load.image("tileset", "public/assets/texture.png");
     this.load.image("star", "public/assets/star.png");
 
@@ -20,7 +20,7 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
-    const map = this.make.tilemap({ key: "map" });
+    const map = this.make.tilemap({ key: "map2" });
     
 
     // Parameters are the name you gave the tileset in Tiled and then the key of the tileset image in
@@ -109,14 +109,10 @@ export default class Game extends Phaser.Scene {
       fill: "#000",
     });
 
-    this.scoremaxText = this.add.text(16, 50, `Puntos: ${this.scoremax}`, {
+     this.scoremaxText = this.add.text(16, 50, `Puntos: ${this.scoremax}`, {
       fontSize: "32px",
       fill: "#000",
     });
-
-    this.scoreText.setScrollFactor(0);
-    this.scoremaxText.setScrollFactor(0);
-
 
     const exitZoneData = objectsLayer.objects.find(obj => obj.name === "Llegada" && obj.type === "Escape");
 
@@ -134,7 +130,7 @@ export default class Game extends Phaser.Scene {
   tryExit(player, zone) {
     if (this.score >= 5) {
       console.log("¡Cambio de pantalla!");
-      this.scene.start("Segundaescena", { scoremax: this.scoremax });
+      this.scene.start("Nivel2", { scoremax: this.scoremax });
     } else {
       console.log("Necesitas al menos 5 puntos para avanzar.");
     }
