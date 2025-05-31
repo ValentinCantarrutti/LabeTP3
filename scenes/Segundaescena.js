@@ -69,7 +69,7 @@ export default class NextScene extends Phaser.Scene {
     }
 
     if (Phaser.Input.Keyboard.JustDown(this.keyEsc)) {
-      this.scene.start("Nivel1");
+      this.scene.start("menu-scene");
     }
   }
 }
